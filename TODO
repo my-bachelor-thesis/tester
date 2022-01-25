@@ -1,0 +1,3 @@
+- migrate to docker-compose
+- get rid of bash
+- migrate to echo

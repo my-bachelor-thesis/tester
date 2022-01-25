@@ -1,0 +1,7 @@
+# Ignore all dirs that start with dot
+.*/
+
+# Ignore assets
+assets/
+
+go.sum

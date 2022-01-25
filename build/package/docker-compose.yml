@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+
+  tester:
+    image: tester
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    container_name: "tester_1"
+    volumes:
+      - "../../assets/user_solutions:/home/user_solutions"
