@@ -3,25 +3,30 @@ package containers
 import (
 	"encoding/json"
 	"os/exec"
-	"strconv"
-	"tester/external/utils"
 	"tester/internal/consts"
 	"tester/internal/structs"
+	"tester/internal/util"
 )
 
-func RunSolution(userId, taskId int, container, lang string) (*structs.OutgoingJson, error) {
+func RunSolution(folderName string, lang consts.Language) (*structs.OutgoingJson, error) {
+	containerName := GetFreeContainer()
+
 	res := structs.OutgoingJson{}
 
-	if lang == consts.Go.String() {
-		gotFromScript, _ := exec.Command("scripts/run_solution.sh", strconv.Itoa(userId), strconv.Itoa(taskId), container, lang).Output()
-		//fmt.Println(string(out))
-		//fmt.Println(err)
-		json.Unmarshal(gotFromScript, &res)
-		//fmt.Println(err)
-		res.BinarySize = utils.BytesToMB(res.BinarySize)
-		res.MaxRamUsage = utils.KBytesToMB(res.MaxRamUsage)
-		//utils.PrettyPrintJson(res)
+	gotFromScript, err := exec.Command("scripts/run_solution.sh", folderName, containerName, lang.String()).Output()
+	if exitErr, ok := err.(*exec.ExitError); ok && exitErr.Stderr != nil {
+		return nil, err
 	}
+	if err = json.Unmarshal(gotFromScript, &res); err != nil {
+		return nil, err
+	}
+
+	res.MaxRamUsage = util.KBytesToMB(res.MaxRamUsage)
+
+	if util.LanguageIsCompiled(lang) {
+		res.BinarySize = util.BytesToMB(res.BinarySize)
+	}
+
 	return &res, nil
 }
 
@@ -33,5 +38,5 @@ func StartAll() error {
 }
 
 func GetFreeContainer() string {
-	return "tester_1"
+	return "package-tester-1"
 }

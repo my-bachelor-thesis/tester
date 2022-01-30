@@ -2,12 +2,6 @@ package consts
 
 type Language int
 
-func (l Language) String() string {
-	return Languages[l]
-}
-
-var Languages = [...]string{"go", "python"}
-
 const (
 	Go Language = iota
 	Python
@@ -19,3 +13,12 @@ const (
 	BytesInMB  = 1e6
 	KBytesInMB = 1e3
 )
+
+var (
+	Languages         = [...]string{"go", "python"}
+	CompiledLanguages = map[Language]struct{}{Go: {}}
+)
+
+func (l Language) String() string {
+	return Languages[l]
+}

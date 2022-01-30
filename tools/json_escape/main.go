@@ -2,19 +2,20 @@ package main
 
 import (
 	"os"
-	"tester/external/utils"
 	"tester/internal/consts"
+	"tester/internal/util"
 )
-
-
 
 func main() {
 	err := os.Chdir("tools/json_escape")
-	utils.PanicIfErr(err)
+	util.PanicIfErr(err)
 
 	data, err := os.ReadFile("orig")
-	utils.PanicIfErr(err)
+	util.PanicIfErr(err)
 
-	err = os.WriteFile("cleaned", []byte(utils.EscapeJson(string(data))), consts.FilePerm)
-	utils.PanicIfErr(err)
+	cleaned, err := util.EscapeJson(string(data))
+	util.PanicIfErr(err)
+
+	err = os.WriteFile("cleaned", []byte(cleaned), consts.FilePerm)
+	util.PanicIfErr(err)
 }

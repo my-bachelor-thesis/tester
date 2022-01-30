@@ -1,4 +1,4 @@
-package utils
+package util
 
 import (
 	"bytes"
@@ -7,29 +7,6 @@ import (
 	"os"
 	"tester/internal/consts"
 )
-
-func FolderExists(path string) bool {
-	s, err := os.Stat(path)
-	return !os.IsNotExist(err) && s.IsDir()
-}
-
-func FileExists(path string) bool {
-	s, err := os.Stat(path)
-	return !os.IsNotExist(err) && !s.IsDir()
-}
-
-func CreateFoldersIfNotExist(path string) error {
-	if !FolderExists(path) {
-		return os.MkdirAll(path, 0755)
-	}
-	return nil
-}
-
-func PanicIfErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
 
 func BytesToMB(bytes float32) float32 {
 	return float32(int(bytes/consts.BytesInMB*100)) / 100
@@ -52,9 +29,32 @@ func PrettyPrintJson(data *interface{}) {
 	fmt.Println(buffer.String())
 }
 
-func EscapeJson(i string) string {
+func EscapeJson(i string) (string, error) {
 	b, err := json.Marshal(i)
-	PanicIfErr(err)
+	if err != nil {
+		return "", err
+	}
 	s := string(b)
-	return s[1 : len(s)-1]
+	return s[1 : len(s)-1], nil
+}
+
+func LanguageIsCompiled(lang consts.Language) bool {
+	_, ok := consts.CompiledLanguages[lang]
+	return ok
+}
+
+func PanicIfErr(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
+func AppendToFile(filename, text string) error {
+	f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, consts.FilePerm)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	_, err = f.WriteString(fmt.Sprintf("\n%s", text))
+	return err
 }

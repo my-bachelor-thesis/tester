@@ -1,8 +1,4 @@
-package main
-
-func IntMin(a, b int) int {
-    if a < b {
+def int_min(a, b):
+    if a < b:
         return a
-    }
     return b
-}
