@@ -2,7 +2,7 @@ package structs
 
 type OutgoingJson struct {
 	ExitCode        int     `json:"exit_code"`
-	Out             string  `json:"out"`
+	Output          string  `json:"output"`
 	CompilationTime float32 `json:"compilation_time"` // in s
 	RealTime        float32 `json:"real_time"`        // in s
 	KernelTime      float32 `json:"kernel_time"`      // in s
