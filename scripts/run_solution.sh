@@ -34,8 +34,7 @@ case $lang in
   binarySize=$(stat --printf="%s" assets/user_solutions/$lang/"$folderName"/main)
 
   printf '{"compilation_time":%s, "binary_size":%s, %s, "output":"%s"}' "$compilationOutput" "$binarySize" "$stats" "$testMsg"
-  exit 0
-  ;;
+  exit 0;;
 
 "python")
   testOutput=$(docker exec "$containerName" timeout "$timeout" "$timePath" -f "\"real_time\":%e, \"kernel_time\":%S, \"user_time\":%U, \"max_ram_usage\":%M" pytest "$pathInContainer"/main.py --durations=0 -vv 2>&1)
@@ -45,7 +44,6 @@ case $lang in
   [ $exitCode -eq 124 ] && terminated="^the program terminated because it ran for more than $timeout seconds"
   [ $exitCode -ne 0 ] && printf '{"exit_code":2, "output":"%s"}' "$testMsg""$terminated" && exit 2
   printf '{%s, "output":"%s"}' "$stats" "$testMsg"
-  exit 0
-  ;;
+  exit 0;;
 
 esac

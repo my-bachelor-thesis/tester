@@ -3,12 +3,12 @@ package containers
 import (
 	"encoding/json"
 	"os/exec"
-	"tester/internal/consts"
+	"tester/internal/ioutils"
+	"tester/internal/languages"
 	"tester/internal/structs"
-	"tester/internal/util"
 )
 
-func RunSolution(folderName string, lang consts.Language) (*structs.OutgoingJson, error) {
+func RunSolution(folderName string, lang languages.Language) (*structs.OutgoingJson, error) {
 	containerName := GetFreeContainer()
 
 	res := structs.OutgoingJson{}
@@ -21,10 +21,10 @@ func RunSolution(folderName string, lang consts.Language) (*structs.OutgoingJson
 		return nil, err
 	}
 
-	res.MaxRamUsage = util.KBytesToMB(res.MaxRamUsage)
+	res.MaxRamUsage = ioutils.KBytesToMB(res.MaxRamUsage)
 
-	if util.LanguageIsCompiled(lang) {
-		res.BinarySize = util.BytesToMB(res.BinarySize)
+	if languages.LanguageIsCompiled(lang) {
+		res.BinarySize = ioutils.BytesToMB(res.BinarySize)
 	}
 
 	return &res, nil

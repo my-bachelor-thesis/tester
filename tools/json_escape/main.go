@@ -1,21 +1,35 @@
 package main
 
 import (
+	"encoding/json"
+	"log"
 	"os"
-	"tester/internal/consts"
-	"tester/internal/util"
+	"tester/internal/ioutils"
 )
 
 func main() {
-	err := os.Chdir("tools/json_escape")
-	util.PanicIfErr(err)
+	exitIfErr(os.Chdir("tools/json_escape"))
 
 	data, err := os.ReadFile("orig")
-	util.PanicIfErr(err)
+	exitIfErr(err)
 
-	cleaned, err := util.EscapeJson(string(data))
-	util.PanicIfErr(err)
+	cleaned, err := escapeJson(string(data))
+	exitIfErr(err)
 
-	err = os.WriteFile("cleaned", []byte(cleaned), consts.FilePerm)
-	util.PanicIfErr(err)
+	exitIfErr(os.WriteFile("cleaned", []byte(cleaned), ioutils.FilePerm))
+}
+
+func escapeJson(i string) (string, error) {
+	b, err := json.Marshal(i)
+	if err != nil {
+		return "", err
+	}
+	s := string(b)
+	return s[1 : len(s)-1], nil
+}
+
+func exitIfErr(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
 }

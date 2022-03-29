@@ -7,13 +7,12 @@ import (
 	"log"
 	"os"
 	"runtime"
-	"tester/internal/consts"
+	"tester/internal/config"
 	"tester/internal/containers"
 	"tester/internal/handlers"
-	"tester/internal/util"
+	"tester/internal/ioutils"
+	"tester/internal/languages"
 )
-
-const addr = ":4000"
 
 func init() {
 	if runtime.GOOS != "linux" {
@@ -21,20 +20,21 @@ func init() {
 	}
 }
 
-func createAllFolders() {
-	for _, language := range consts.Languages {
-		err := os.MkdirAll(fmt.Sprintf("assets/user_solutions/%s", language), consts.FolderPerm)
-		util.PanicIfErr(err)
+func createAllFolders(e *echo.Echo) {
+	for _, language := range languages.Languages {
+		logAndExitIfErr(e, os.MkdirAll(fmt.Sprintf("assets/user_solutions/%s", language), ioutils.FolderPerm))
 	}
 }
 
 func main() {
-	createAllFolders()
-
-	err := containers.StartAll()
-	util.PanicIfErr(err)
-
 	e := echo.New()
+
+	createAllFolders(e)
+
+	logAndExitIfErr(e, config.LoadConfig())
+
+	logAndExitIfErr(e, containers.StartAll())
+
 	e.POST("/go", handlers.Golang)
 	e.POST("/python", handlers.Python)
 
@@ -44,5 +44,11 @@ func main() {
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 	}))
 
-	e.Logger.Fatal(e.Start(addr))
+	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", config.GetInstance().Port)))
+}
+
+func logAndExitIfErr(e *echo.Echo, err error) {
+	if err != nil {
+		e.Logger.Fatal(err)
+	}
 }
