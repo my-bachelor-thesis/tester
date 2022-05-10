@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"log"
 	"os"
+	"os/exec"
 	"runtime"
 	"tester/internal/config"
 	"tester/internal/containers"
@@ -17,6 +18,10 @@ import (
 func init() {
 	if runtime.GOOS != "linux" {
 		log.Fatal("can only run on Linux")
+	}
+	xxdCmd := exec.Command("xxd", "-v")
+	if err := xxdCmd.Run(); err != nil {
+		log.Fatal("didn't find xxd")
 	}
 }
 
