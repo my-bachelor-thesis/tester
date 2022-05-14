@@ -8,16 +8,17 @@ lang="$3"
 #containerName="package-tester-1"
 #lang="python"
 
-timeout=5 # in seconds
+toHex() {
+  echo "$1" | xxd -p -c 10000000
+}
+
+# in seconds
+timeout=5
+timeoutMsg=$(toHex "\nthe program terminated because it ran for more than $timeout seconds")
 
 timePath="/usr/bin/time"
 
 pathInContainer="/home/user_solutions/$lang/$folderName"
-
-toHex() {
-  #  echo "$1" | sed ":a;N;\$!ba; s/\n/^/g; s/\"/'/g" | tr -dc '[:print:]'
-  echo "$1" | xxd -p -c 10000000
-}
 
 case $lang in
 "go")
@@ -29,10 +30,10 @@ case $lang in
   exitCode=$?
   stats=$(echo "$testOutput" | tail -n 1)
   testMsg=$(toHex "$(echo "$testOutput" | head -n -1)")
-  [ $exitCode -eq 124 ] && terminated="^the program terminated because it ran for more than $timeout seconds"
+  [ $exitCode -eq 124 ] && terminated="$timeoutMsg"
   [ $exitCode -ne 0 ] && printf '{"exit_code":2, "output":"%s"}' "$testMsg""$terminated" && exit 2
 
-  binarySize=$(stat --printf="%s" assets/user_solutions/$lang/"$folderName"/main)
+  binarySize=$(stat --printf="%s" assets/user_solutions/"$lang"/"$folderName"/main)
 
   printf '{"compilation_time":%s, "binary_size":%s, %s, "output":"%s"}' "$compilationOutput" "$binarySize" "$stats" "$testMsg"
   exit 0
@@ -43,7 +44,7 @@ case $lang in
   exitCode=$?
   stats=$(echo "$testOutput" | tail -n 1)
   testMsg=$(toHex "$(echo "$testOutput" | head -n -1)")
-  [ $exitCode -eq 124 ] && terminated="^the program terminated because it ran for more than $timeout seconds"
+  [ $exitCode -eq 124 ] && terminated="$timeoutMsg"
   [ $exitCode -ne 0 ] && printf '{"exit_code":2, "output":"%s"}' "$testMsg""$terminated" && exit 2
   printf '{%s, "output":"%s"}' "$stats" "$testMsg"
   exit 0
