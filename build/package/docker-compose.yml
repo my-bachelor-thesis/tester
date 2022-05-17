@@ -10,4 +10,4 @@ services:
       resources:
         limits:
           cpus: '1.5'
-          memory: "614M"
+          memory: "200M"
