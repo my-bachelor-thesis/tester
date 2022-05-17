@@ -1,0 +1,11 @@
+[Unit]
+Description=apibaka
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5s
+ExecStart=/root/tester/main
+
+[Install]
+WantedBy=multi-user.target
