@@ -10,7 +10,8 @@ const envFile = ".env"
 var config Config
 
 type Config struct {
-	Port int
+	Port         int
+	IsProduction bool
 }
 
 func LoadConfig() error {

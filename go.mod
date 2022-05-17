@@ -3,6 +3,7 @@ module tester
 go 1.18
 
 require (
+	github.com/enriquebris/goconcurrentqueue v0.6.3
 	github.com/joho/godotenv v1.4.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/labstack/echo/v4 v4.7.2

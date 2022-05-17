@@ -5,11 +5,13 @@ type Language int
 const (
 	Go Language = iota
 	Python
+	Javascript
+	Cpp
 )
 
 var (
-	Languages         = [...]string{"go", "python"}
-	CompiledLanguages = map[Language]struct{}{Go: {}}
+	Languages         = [...]string{"go", "python", "javascript", "cpp"}
+	CompiledLanguages = map[Language]struct{}{Go: {}, Cpp: {}}
 )
 
 func (l Language) String() string {

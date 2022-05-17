@@ -19,9 +19,19 @@ func init() {
 	if runtime.GOOS != "linux" {
 		log.Fatal("can only run on Linux")
 	}
+
 	xxdCmd := exec.Command("xxd", "-v")
 	if err := xxdCmd.Run(); err != nil {
 		log.Fatal("didn't find xxd")
+	}
+
+	ydCmd := exec.Command("yq", "-V")
+	if err := ydCmd.Run(); err != nil {
+		log.Fatal("didn't find xxd")
+	}
+
+	if runtime.NumCPU() < 2 {
+		log.Fatal("can only run on more than 2 cores")
 	}
 }
 
@@ -34,6 +44,11 @@ func createAllFolders(e *echo.Echo) {
 func main() {
 	e := echo.New()
 
+	if config.GetInstance().IsProduction {
+		e.Use(middleware.Recover())
+		e.Use(middleware.Logger())
+	}
+
 	createAllFolders(e)
 
 	logAndExitIfErr(e, config.LoadConfig())
@@ -42,6 +57,8 @@ func main() {
 
 	e.POST("/go", handlers.Golang)
 	e.POST("/python", handlers.Python)
+	e.POST("/cpp", handlers.Cpp)
+	e.POST("/javascript", handlers.Javascript)
 
 	// disable all CORS
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{

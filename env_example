@@ -1,2 +1,3 @@
 # rename to .env
 TESTER_PORT=4000
+WEBSERVER_ISINPRODUCTION=false

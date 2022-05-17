@@ -1,42 +1,53 @@
 package handlers
 
 import (
-	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
-	"os"
-	"path/filepath"
-	"tester/internal/containers"
-	"tester/internal/ioutils"
 	"tester/internal/languages"
 	"tester/internal/structs"
 )
 
 func Golang(c echo.Context) error {
 	in := &structs.IncomingJson{}
-	out := &structs.OutgoingJson{}
 
 	if err := c.Bind(in); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		return err
 	}
 
-	path, err := os.MkdirTemp("assets/user_solutions/go", "*")
+	out, err := writeToFilesAndRun(languages.Go, []fileToWrite{
+		{Name: "main.go", Content: []string{in.Solution}},
+		{Name: "main_test.go", Content: []string{in.Test}},
+	})
+
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-	}
-	defer os.RemoveAll(path)
-
-	if err = os.WriteFile(fmt.Sprintf("%s/main_test.go", path), []byte(in.Test), ioutils.FilePerm); err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-	}
-	if err = os.WriteFile(fmt.Sprintf("%s/main.go", path), []byte(in.Solution), ioutils.FilePerm); err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-	}
-
-	out, err = containers.RunSolution(filepath.Base(path), languages.Go)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		return err
 	}
 
 	return c.JSON(http.StatusOK, out)
+	//in := &structs.IncomingJson{}
+	//out := &structs.OutgoingJson{}
+	//
+	//if err := c.Bind(in); err != nil {
+	//	return err
+	//}
+	//
+	//path, err := os.MkdirTemp("assets/user_solutions/go", "*")
+	//if err != nil {
+	//	return err
+	//}
+	//defer os.RemoveAll(path)
+	//
+	//if err = os.WriteFile(fmt.Sprintf("%s/main_test.go", path), []byte(in.Test), ioutils.FilePerm); err != nil {
+	//	return err
+	//}
+	//if err = os.WriteFile(fmt.Sprintf("%s/main.go", path), []byte(in.Solution), ioutils.FilePerm); err != nil {
+	//	return err
+	//}
+	//
+	//out, err = containers.RunSolution(filepath.Base(path), languages.Go)
+	//if err != nil {
+	//	return err
+	//}
+	//
+	//return c.JSON(http.StatusOK, out)
 }

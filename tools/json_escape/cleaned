@@ -1,1 +1,1 @@
-def int_min(a, b):\n    if a \u003c b:\n        return a\n    return b
+TEST_CASE( \"Factorials are computed\", \"[factorial]\" ) {\n    REQUIRE( Factorial(1) == 1 );\n    REQUIRE( Factorial(2) == 2 );\n    REQUIRE( Factorial(3) == 6 );\n    REQUIRE( Factorial(10) == 3628800 );\n}

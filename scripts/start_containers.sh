@@ -1,15 +1,11 @@
 #!/bin/sh
 
-chmod +x scripts/*.sh
+chmod +x run_solution.sh
 
-## stop all containers
-#docker kill "$(docker ps -q)"
-#
-## remove all containers
-#docker rm "$(docker ps -a -q)"
-#
-#docker run --name tester_1 -it -d -v "$(pwd)"/assets/user_solutions:/home/user_solutions server
-#
-##echo "tester_1"
+numberOfContainers="$1"
+ramPerContainer="$2"
+dockerFile="build/package/docker-compose.yml"
 
-docker-compose -f build/package/docker-compose.yml up --scale tester=1 -d
+yq -i '.services.tester.deploy.resources.limits.memory = "'"$ramPerContainer"'M"' "$dockerFile"
+
+docker-compose -f "$dockerFile" up --scale tester="$numberOfContainers" -d
