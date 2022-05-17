@@ -27,7 +27,7 @@ func init() {
 
 	ydCmd := exec.Command("yq", "-V")
 	if err := ydCmd.Run(); err != nil {
-		log.Fatal("didn't find xxd")
+		log.Fatal("didn't find yq")
 	}
 
 	if runtime.NumCPU() < 2 {
