@@ -2,6 +2,9 @@
 
 chmod +x scripts/run_solution.sh
 
+# stop and remove all
+docker ps -aq | xargs docker stop | xargs docker rm
+
 numberOfContainers="$1"
 ramPerContainer="$2"
 dockerFile="build/package/docker-compose.yml"
