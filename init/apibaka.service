@@ -7,6 +7,8 @@ Restart=always
 RestartSec=5s
 ExecStart=/root/tester/main
 WorkingDirectory=/root/tester
+StandardOutput=/var/log/apibaka
+StandardError=/var/log/apibaka_error
 
 [Install]
 WantedBy=multi-user.target
