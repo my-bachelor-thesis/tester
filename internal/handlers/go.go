@@ -24,30 +24,4 @@ func Golang(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, out)
-	//in := &structs.IncomingJson{}
-	//out := &structs.OutgoingJson{}
-	//
-	//if err := c.Bind(in); err != nil {
-	//	return err
-	//}
-	//
-	//path, err := os.MkdirTemp("assets/user_solutions/go", "*")
-	//if err != nil {
-	//	return err
-	//}
-	//defer os.RemoveAll(path)
-	//
-	//if err = os.WriteFile(fmt.Sprintf("%s/main_test.go", path), []byte(in.Test), ioutils.FilePerm); err != nil {
-	//	return err
-	//}
-	//if err = os.WriteFile(fmt.Sprintf("%s/main.go", path), []byte(in.Solution), ioutils.FilePerm); err != nil {
-	//	return err
-	//}
-	//
-	//out, err = containers.RunSolution(filepath.Base(path), languages.Go)
-	//if err != nil {
-	//	return err
-	//}
-	//
-	//return c.JSON(http.StatusOK, out)
 }
