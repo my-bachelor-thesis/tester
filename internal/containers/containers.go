@@ -10,16 +10,16 @@ import (
 	"strings"
 	"tester/internal/ioutils"
 	"tester/internal/languages"
-	"tester/internal/structs"
+	"tester/internal/webserver_structs"
 )
 
 var fifo = goconcurrentqueue.NewFIFO()
 
-func RunSolution(folderName string, lang languages.Language) (*structs.OutgoingJson, error) {
+func RunSolution(folderName string, lang languages.Language) (*webserver_structs.OutgoingJson, error) {
 	containerName := <-GetFreeContainer()
 	defer FreeContainer(containerName)
 
-	res := structs.OutgoingJson{}
+	res := webserver_structs.OutgoingJson{}
 
 	gotFromScript, err := exec.Command("scripts/run_solution.sh", folderName, containerName, lang.String()).Output()
 	if exitErr, ok := err.(*exec.ExitError); ok && exitErr.Stderr != nil {

@@ -7,7 +7,7 @@ import (
 	"tester/internal/containers"
 	"tester/internal/ioutils"
 	"tester/internal/languages"
-	"tester/internal/structs"
+	"tester/internal/webserver_structs"
 )
 
 type fileToWrite struct {
@@ -15,7 +15,7 @@ type fileToWrite struct {
 	Content []string
 }
 
-func writeToFilesAndRun(lang languages.Language, filesToWrite []fileToWrite) (*structs.OutgoingJson, error) {
+func writeToFilesAndRun(lang languages.Language, filesToWrite []fileToWrite) (*webserver_structs.OutgoingJson, error) {
 	path, err := os.MkdirTemp(fmt.Sprintf("assets/user_solutions/%s", lang), "*")
 	if err != nil {
 		return nil, err
@@ -41,7 +41,7 @@ func writeToFilesAndRun(lang languages.Language, filesToWrite []fileToWrite) (*s
 		}
 	}
 
-	out := &structs.OutgoingJson{}
+	out := &webserver_structs.OutgoingJson{}
 	out, err = containers.RunSolution(filepath.Base(path), lang)
 	if err != nil {
 		return nil, err

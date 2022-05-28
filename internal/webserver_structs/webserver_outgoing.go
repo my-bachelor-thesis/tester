@@ -1,4 +1,4 @@
-package structs
+package webserver_structs
 
 type OutgoingJson struct {
 	ExitCode        int     `json:"exit_code"`

@@ -4,11 +4,11 @@ import (
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"tester/internal/languages"
-	"tester/internal/structs"
+	"tester/internal/webserver_structs"
 )
 
 func Python(c echo.Context) error {
-	in := &structs.IncomingJson{}
+	in := &webserver_structs.IncomingJson{}
 
 	if err := c.Bind(in); err != nil {
 		return err

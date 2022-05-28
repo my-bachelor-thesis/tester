@@ -14,12 +14,12 @@ toHex() {
 }
 
 # in seconds
-timeout=5
+timeout=10
 timeoutMsg=$(toHex "The program was terminated because it ran for more than $timeout seconds")
 
 # in seconds
 compilationTimeout=20
-compilationTimeoutMsg=$(toHex "The program was terminated because it took more than $timeout seconds to compile it")
+compilationTimeoutMsg=$(toHex "The program was terminated because it took more than $compilationTimeout seconds to compile it")
 
 timePath="/usr/bin/time"
 
@@ -33,9 +33,6 @@ docker exec "$containerName" useradd -d "$pathInContainer" "$username"
 docker exec "$containerName" chown -R "$username" "$pathInContainer"
 
 runCompiledLanguage() {
-  #  compilationCmd="$1"
-  #  runCmd="$2"
-
   compilationOutput=$(docker exec -u "$username" "$containerName" timeout "$compilationTimeout" "$timePath" -f %e $(echo "$compilationCmd") 2>&1)
   exitCode=$?
   [ $exitCode -eq 124 ] && terminated="$compilationTimeoutMsg"
@@ -50,8 +47,6 @@ runCompiledLanguage() {
 }
 
 runInterpretedLanguage() {
-  #  runCmd="$1"
-
   runSolution
 
   printf '{%s, "output":"%s"}' "$stats" "$testMsg"

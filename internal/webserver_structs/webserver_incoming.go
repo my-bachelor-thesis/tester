@@ -1,4 +1,4 @@
-package structs
+package webserver_structs
 
 type IncomingJson struct {
 	Solution string `json:"solution"`
